@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head lang = "en">
+    <meta charset = "UTF-8">
+    <title>Wheel of Fortune</title>
+    <script>
+        //The C level was 1-2 players, but for an A, you want 3 players
+        var numP; //number of players
+        var names= []; //array of player names
+        var word; //current word that is chosen for this game
+        var board; //the displayed word made up of letters and underscores
+        var spun = false; //boolean to determine if the player has spun the wheel
+        var myGuess; //letter chosen by the player on their turn
+        var choices = []; //array of letters that have been guessed by players
+        var WheelNums = [0, 750, 500, 300, 200, 100, 400, 150, 450, 250, 350, 600]; //array of wheel values
+        var currNum; //number spun on Wheel, if working on A level, 0 is bankrupt
+        var myMoney = [0, 0, 0]; //array of amount of money for each player
+        var totGuessed = 0; //number of letters guessed correctly
+        var playerTurn; //variable to store whose turn it is, value is index in player array
+        var gameOver = false; //variable to store whether the game is over or not
+        var categories = ["Animals" , "Disney Movies"]; //playing cattegories
+        var animals = ["CAT", "TURTLE", "HAMSTER", "FISH"]; //array of animals
+        var disneyMovies = ["DUMBO" , "THE LION KING" , "BEAUTY AND THE BEAST"]; //array of disney movies
+        var randomCategory; //random category word
+        
+        var wheel1 = new Image();
+        wheel1.src = "https://codehs.com/uploads/5055e1083ea569e7540d91dfd38b08be";
+        //1
+        var wheel2 = new Image();
+        wheel2.src = "https://codehs.com/uploads/9060f57f7de26aa5587f6b0a5a439cb6";
+        //2
+        var wheel3 = new Image();
+        wheel3.src ="https://codehs.com/uploads/a4b9e60715ec4cb109454ee69e01abda";
+        //3
+        var wheel4 = new Image();
+        wheel4.src = "https://codehs.com/uploads/883ff30d7d8a573618ef4494ecab263a";
+        //4
+        var wheel5 = new Image();
+        wheel5.src = "https://codehs.com/uploads/22d34c2dca9e3b7e1539f86c51f0a74c";
+        //5
+        var wheel6 = new Image();
+        wheel6.src = "https://codehs.com/uploads/73c33efadf5afba1c057b3b2560d64d4";
+        //6
+        var wheel7 = new Image();
+        wheel7.src = "https://codehs.com/uploads/4c91204cb815c375033e7c78901c95d1";
+        //7
+        var wheel8 = new Image();
+        wheel8.src = "https://codehs.com/uploads/150a147b2dc171204104ae030b4e9e14";
+        //8
+        var wheel9 = new Image();
+        wheel9.src = "https://codehs.com/uploads/ac02a9d7f10d5ecfd679aacbf49125c8";
+        //9
+        var wheel10 = new Image();
+        wheel10.src = "https://codehs.com/uploads/198777f5d96aab0bf8ad9397ea9e3d0d";
+        //10
+        var wheel11 = new Image();
+        wheel11.src = "https://codehs.com/uploads/cebf08e6580b27b142bda25978ab080b";
+        //11
+        var wheel12 = new Image();
+        wheel12.src = "https://codehs.com/uploads/4073f3205855e1c4d595a5e690cad64d";
+        //12
+        var wheel13 = new Image();
+        wheel13.src = "https://codehs.com/uploads/2cf6947813677c4fa85a6fbbbf44690f";
+        //13
+        var wheel14 = new Image();
+        wheel14.src = "https://codehs.com/uploads/fbf030631eaa1ae1b10e43ed5b5bbebb";
+        //14
+        var wheel15 = new Image();
+        wheel15.src = "https://codehs.com/uploads/676d82c576e75065db305a3a265a836e";
+        
+        var wheel16 = new Image();
+        wheel16.src = "https://codehs.com/uploads/effe36193deaa8076adbd1f185f2d513";
+        
+        var wheel17 = new Image();
+        wheel17.src = "https://codehs.com/uploads/57d5ab7a9fc9867b24602ac8592f0af4";
+
+        var wheel18 = new Image();
+        wheel18.src = "https://codehs.com/uploads/4225a82d3ceb00411fdab81c6807fdd6";
+        //18
+        var wheel19 = new Image();
+        wheel19.src = "https://codehs.com/uploads/8ae63df409ba56a3b4c8d196527aefea";
+        
+        var wheel20 = new Image();
+        wheel20.src = "https://codehs.com/uploads/e5bfd3b942c0add1c10b16ab246ba679";
+        //20
+        var wheel21 = new Image();
+        wheel21.src = "https://codehs.com/uploads/946712f15fcf72ef89fd4be3503cb04a";
+        
+        var wheel22 = new Image();
+        wheel22.src = "https://codehs.com/uploads/6d122105787152123d5b5fb81dec45df";
+        
+        var wheel23 = new Image();
+        wheel23.src = "https://codehs.com/uploads/8f23a8ba1d819c239f22f12636c9d926";
+    
+        var wheelImages = [wheel1, wheel2, wheel3, wheel4, wheel5, wheel6, wheel7, wheel8, wheel9, wheel10, wheel11, wheel12, wheel13, wheel14, wheel15, wheel16, wheel17, wheel18, wheel19, wheel20, wheel21, wheel22, wheel23];
+       
+        //function to start the game
+        function Start(){
+            //assume we are all trying for an A, so there will be 3 players to start
+            //numP = prompt("How many players do you want to play the game?");
+            numP = 3;
+            for(i = 1; i <=numP;i++){
+                //add 3 names to the names array, the user inputs the names
+                names.push(prompt("What is the name of player #" + i + "?"));
+            }
+            InitGame();
+       
+        }
+       
+        function InitGame() {
+              gameOver = false; //game just started, so game is no longer over
+              var n = Math.floor(Math.random()*categories.length); //random index for catergories
+              randomCategory = categories[n]; //set the 
+              document.getElementById('category').innerHTML = "Category: " + randomCategory; //show catergory
+             
+              if(randomCategory == "Animals"){ //if the random catergory was the catergory "animals" then pick a random word from animals array
+                  word = animals[Math.floor(Math.random()*animals.length)];
+              } else{ //if the random catergory was the other catergory then pick a random word from the other catergory array
+                  word = disneyMovies[Math.floor(Math.random()*disneyMovies.length)];
+              }
+              makeWord(); //create the board
+              playerTurn = Math.floor(Math.random()*numP); //pick random player
+              document.getElementById('spin').innerHTML= names[playerTurn] + ", It is your turn.  Click to spin the wheel!";
+        }
+       
+        function makeWord(){
+            //we want to make a loop that finds the letters in the guessed letter array and changes the board
+            //if the letter isn't the word, tell the user with an alert
+            var board = "";
+            //use a boolean variable to determine if the letter has been found in the word and guessed letters array
+            var found = false;
+            //make checker to see if all the letters have been guess
+            var checker = 0;
+            //iterate through the word in this game
+            for(var i = 0; i <word.length; i++){
+                found = false;
+                //iterate through the letters that have been guessed
+                for(var j = 0; j <choices.length; j++){
+                    //if the letter in the word has been guessed, add it to the board
+                    if(choices[j]==word[i]){
+                        board = board + choices[j];
+                        found = true;
+                        checker++;
+                    }
+                   
+                }
+                //if the letter in the word has not been guessed, add an underscore to the board
+            if (found == false){
+                board = board + "  ___  ";
+               
+            }
+            }
+            document.getElementById('showWord').innerHTML= "Game Board: " + board;
+            //if the checker is = the length of the word, then show the winner
+            if(checker == word.length){
+                win();
+            }
+        }
+       
+        function addMoney(){
+            myMoney[playerTurn] = myMoney[playerTurn] +  currNum; //add current player's money to the money they got
+            document.getElementById("mon").innerHTML = names[0] + ": " + myMoney[0] + ", " + names[1] + ": " + myMoney[1] +  ", " + names[2] + ": " + myMoney[2];
+           
+        }
+       
+        function switchPlayer(){
+            //add 1 to the playerTurn index.  If you get up to 3, playerTurn should go back to 0
+            spun = false;
+            if(playerTurn < 2){
+                playerTurn = playerTurn + 1;
+            } else{
+                playerTurn = 0;
+            }
+            document.getElementById('spin').innerHTML= names[playerTurn] + ", It is your turn.  Click to spin the wheel!";
+           
+        }
+       
+        function spinWheel(){
+            if(spun == true){
+                alert("You can't spin twice. Guess before spinning again.");
+            }else{
+                
+            //this function should spin the wheel and choose a random value from our array
+            //of wheel values
+            spun = true; // player spun so make spun true
+           
+            //choose a random index value from the WheelNums array
+            var r = Math.floor(Math.random()*WheelNums.length);
+           
+            if(WheelNums[r] ==0){
+                document.getElementById("dAmount").innerHTML = names[playerTurn] + ", you just went bankrupt.";
+                currNum = 0;
+                spinningWheel();
+                myMoney[playerTurn] = 0;
+                document.getElementById("mon").innerHTML = names[0] + ": " + myMoney[0] + ", " + names[1] + ": " + myMoney[1] + ", " + names[2] + ": " + myMoney[2];
+                switchPlayer(); //skip their turn if they went bankrupt
+               
+            }
+            else{
+                currNum = WheelNums[r];
+                spinningWheel();
+                document.getElementById("dAmount").innerHTML = names[playerTurn] + ", you have spun: " + WheelNums[r];
+               
+            }
+        }
+        }
+        
+        function spinningWheel(){
+            //alert("spun");
+            //alert(wheelImages.length);
+            /*for(i = 0; i < wheelImages.length-1; i++){
+                myVar = setTimeout(calledToSpin, 1000);
+                //alert(i);
+            }*/
+            
+            setTimeout(function(){showImage(wheelImages[0]);}, 100);
+            setTimeout(function(){showImage(wheelImages[1]);}, 200);
+            setTimeout(function(){showImage(wheelImages[2]);}, 300);
+            setTimeout(function(){showImage(wheelImages[3]);}, 400);
+            setTimeout(function(){showImage(wheelImages[4]);}, 500);
+            setTimeout(function(){showImage(wheelImages[5]);}, 600);
+            setTimeout(function(){showImage(wheelImages[6]);}, 700);
+            setTimeout(function(){showImage(wheelImages[7]);}, 800);
+            setTimeout(function(){showImage(wheelImages[8]);}, 900);
+            setTimeout(function(){showImage(wheelImages[9]);}, 1000);
+            setTimeout(function(){showImage(wheelImages[10]);}, 1100);
+            if(currNum == 0){ //1
+                setTimeout(function(){showImage(wheelImages[2]);}, 1200);
+            } else if(currNum == 750){ //2
+                setTimeout(function(){showImage(wheelImages[1]);}, 1200);
+            } else if(currNum == 500){ //3
+                setTimeout(function(){showImage(wheelImages[0]);}, 1200);
+            } else if(currNum == 350){ //4
+                setTimeout(function(){showImage(wheelImages[3]);}, 1200);
+            } else if(currNum == 250){ //5
+                setTimeout(function(){showImage(wheelImages[4]);}, 1200);
+            } else if(currNum == 600){ //6
+                setTimeout(function(){showImage(wheelImages[5]);}, 1200);
+            } else if(currNum == 400){ //7
+                setTimeout(function(){showImage(wheelImages[6]);}, 1200);
+            } else if(currNum == 150){ //8
+                setTimeout(function(){showImage(wheelImages[7]);}, 1200);
+            } else if(currNum == 200){ //9
+                setTimeout(function(){showImage(wheelImages[10]);}, 1200);
+            } else if(currNum == 450){ //10
+                setTimeout(function(){showImage(wheelImages[12]);}, 1200);
+            } else if(currNum == 300){
+                setTimeout(function(){showImage(wheelImages[18]);}, 1200);
+            } else if(currNum == 100){
+                setTimeout(function(){showImage(wheelImages[20]);}, 1200);
+            }
+            
+        }
+        
+        function showImage(wheelNum){
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(wheelNum, 0, 0, 500, 500)// src, x coord, y coord, width, height
+            //document.getElementById('wheel') = wheelNum;
+        }
+
+        
+        
+        function Guess(){
+            //this function should let the player guess a letter
+            //it should check if they have spun the wheel before they can guess
+            var sameLetter = false; //store boolean whether or not the guess is the same as one of the things in choices array
+            var match = false; // hold whether or not there is a letter that matches
+           
+            if(spun == false){ //dont run if player hasn't spun
+                alert("Please spin the wheel before guessing.");
+            } else{
+                myGuess = prompt("What letter is your guess? (USE CAPS ONLY!)"); // get input of guess
+                for(var j = 0; j < choices.length; j++){ //iterate through the guessed letters array and check if the guess is = to one of the already guessed letters
+                    if(myGuess == choices[j]){
+                        sameLetter = true; //set boolean to true if the letters are the same
+                    }
+                }
+               
+                if(sameLetter == true){ //if the letter has been guessed, tell player & skip their turn
+                    alert("This letter has already been guessed.");
+                    switchPlayer();
+                } else if(sameLetter == false){ //if the letter hasn't been guessed
+                    choices.push(myGuess); //put guess in guesses array thing
+               
+                   
+                    for(var i = 0; i< word.length; i++){ //check if the guess is equal to [i] aka each letter in array of word
+                        if(myGuess == word[i]){
+                            match = true;
+                        }
+                    }
+                    if(match == true){
+                        // myMoney[playerTurn] = myMoney[playerTurn] +  WheelNums[r]; //add current player's money to the money they got
+                        spun = false; //reset spin
+                        makeWord(); //call make word function to update board
+                        addMoney(); //add money to player's thing
+                    } else if(match == false){
+                        alert("The letter '" + myGuess + "' was not in the word."); //tell player their letter wasn't in the word
+                       
+                        switchPlayer(); // switch players
+                }
+                }
+                }
+               
+        }
+       
+        function win(){
+            //if the checker was met, display whoever had the most money as the winner
+            var temp; //temp variable to fix text
+            temp = myMoney[playerTurn] + currNum;
+            /*if(myMoney[0] > myMoney[1] && myMoney[0] > myMoney[2]){ //if person 0 had the most money, follow through
+                if(names[playerTurn] == names[0]){ //if the last person who guessed is the winner, fix the text (the temp variable was added bc my code broke and this is the only way i could figure out to fix it)
+                    temp = myMoney[0] + currNum;
+                    document.getElementById("win").innerHTML = names[0] + " is the winner and has won $" + temp + " in the game!";
+                } else{ //if the last person who guessed wasnt the winner, display reg tags (same thing for next 2 else ifs)
+                    document.getElementById("win").innerHTML = names[0] + " is the winner and has won $" + myMoney[0] + " in the game!";
+                }
+            } else if(myMoney[1] > myMoney[0] && myMoney[1] > myMoney[2]){
+                if(names[playerTurn] == names[1]){
+                    temp = myMoney[1] + currNum;
+                    document.getElementById("win").innerHTML = names[1] + " is the winner and has won $" + temp + " in the game!";
+                }else{
+                    document.getElementById("win").innerHTML = names[1] + " is the winner and has won $" + myMoney[1] + " in the game!";
+                }
+            } else if(myMoney[2] > myMoney[0] && myMoney[2] > myMoney[1]){
+                if(names[playerTurn] == names[2]){
+                    temp = myMoney[2] + currNum;
+                    document.getElementById("win").innerHTML = names[2] + " is the winner and has won $" + temp + " in the game!";
+                } else{
+                    document.getElementById("win").innerHTML = names[2] + " is the winner and has won $" + myMoney[2] + " in the game!";
+                }
+            }*/
+            document.getElementById("win").innerHTML = names[playerTurn] + " is the winner and has won $" + temp + " in the game!";
+            gameOver = true;
+        }
+       
+        function playAgain(){ //play again
+            if(gameOver == false){
+                alert("The game isn't over yet to play again! So silly!"); //if the game isnt over, then you can't play again
+            }else if(gameOver == true){ //if game over then
+                document.getElementById("win").innerHTML = ""; //clear winner message
+                if(names[playerTurn] == names[0]){ //if the last person who guessed is the winner, fix the text (the temp variable was added bc my code broke and this is the only way i could figure out to fix it)
+                    myMoney[1] = 0;
+                    myMoney[2] = 0;
+                    //document.getElementById("win").innerHTML = names[0] + " is the winner and has won $" + temp + " in the game!";
+                } else if(names[playerTurn] == names[1]){//if the last person who guessed wasnt the winner, display reg tags (same thing for next 2 else ifs)
+                    myMoney[0] = 0;
+                    myMoney[2] = 0;
+                } else if(names[playerTurn] == names[2]){
+                    myMoney[0] = 0;
+                    myMoney[1] = 0;
+                }
+                document.getElementById("mon").innerHTML = names[0] + ": " + myMoney[0] + ", " + names[1] + ": " + myMoney[1] + ", " + names[2] + ": " + myMoney[2];
+                choices = []; //clear guessed letters
+                InitGame(); //initiate the game
+            }
+        }
+    </script>
+</head>  
+<body>
+   <h1>Welcome to Wheel of Fortune!</h1>
+   <button type ="button" onclick ="Start()">Press to start the game!</button>
+   <p id= "showWord">Game Board</p>
+   <p id="category"></p>
+   <br>
+   
+   <button id ="spin" type ="button" onclick ="spinWheel()">Click to spin the wheel!</button>
+   <p id="dAmount">This is where the dollar amount of the spin will show up.</p>
+   
+   <button type ="button" onclick ="Guess()">Press to guess a letter.</button>
+   <button type ="button" onclick ="playAgain()">Press to play again!</button>
+   
+   <p id = "mon"></p>
+   
+   <h3 id = "win"></h3>
+   
+   <canvas id ="myCanvas" width="500" height="500" style="border:4px solid #000000;"></canvas>
+   
+</body>
+
+</html>
